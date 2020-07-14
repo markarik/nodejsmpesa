@@ -1,21 +1,23 @@
 const express = require("express");
 const request = require("request");
 const bodyParser = require("body-parser");
+var moment = require('moment'); 
+const mysqlconnection = require('./connection');
+const peoplesRoute = require("./routes/people");
+
 const app = express();
 const port = 8000;
 app.use(express.urlencoded({ extended: true })); // `true` instead of `false` 
 app.use(bodyParser.json())
 
 //routes
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+app.use('/people',peoplesRoute);
 
 app.get("/access_token", accessToken, (req, res) => {
   res.status(200).json({ access_token: req.access_token });
 });
 
-app.get("/register", accessToken, (req, resp) => {
+app.post("/register", accessToken, (req, resp) => {
   let url = "https://sandbox.safaricom.co.ke/mpesa/c2b/v1/registerurl";
   let auth = "Bearer " + req.access_token;
 
@@ -29,8 +31,8 @@ app.get("/register", accessToken, (req, resp) => {
       json: {
         ShortCode: "600347",
         ResponseType: "Completetransaction",
-        ConfirmationURL: "https://ba19015266ee.ngrok.io/confirmation",
-        ValidationURL: "https://ba19015266ee.ngrok.io/validation_url",
+        ConfirmationURL: "https://d93364801f0a.ngrok.io/confirmation",
+        ValidationURL: "https://d93364801f0a.ngrok.io/validation_url",
       },
     },
     function (error, response, body) {
@@ -55,7 +57,7 @@ app.post("/validation_url", (req, res) => {
 });
 
 
-app.get("/simulate", accessToken, (req, res) => {
+app.post("/simulate", accessToken, (req, res) => {
   let url = "https://sandbox.safaricom.co.ke/mpesa/c2b/v1/simulate"
   let auth = "Bearer " + req.access_token;
   request(
@@ -104,8 +106,8 @@ app.get("/balance", accessToken, (req, res) => {
         "PartyA":"600347",
         "IdentifierType":"4",
         "Remarks":"remarks.......",
-        "QueueTimeOutURL":"https://ba19015266ee.ngrok.io/timeout_url",
-        "ResultURL":"https://ba19015266ee.ngrok.io/result_url"
+        "QueueTimeOutURL":"https://d93364801f0a.ngrok.io/timeout_url",
+        "ResultURL":"https://d93364801f0a.ngrok.io/result_url"
         }
     },
 
@@ -135,14 +137,20 @@ app.post("/result_url", (req, res) => {
 
 // stk push
 
-app.get('/stk',accessToken,(req,res)=>{
+app.post('/stk',accessToken,(req,res)=>{
   let url = 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest';
   let auth = "Bearer " + req.access_token;
 
   let date = new Date()
-  // let timestamp = date.getDate() + "" + "" + date.getMonth() + "" + "" + date.getFullYear() + "" + "" + date.getHours() + "" + "" + date.getMinutes() + "" + "" + date.getSeconds()
-  const timestamp = date.getFullYear() + "" + "" + date.getMonth()+1 + "" + "" + date.getDate() + "" + "" + date.getHours() + "" + "" + date.getMinutes() + "" + "" + date.getSeconds();
-const password = new Buffer.from('174379' + 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919' + timestamp).toString('base64')
+
+
+
+  
+  
+  let timestamp = moment().format('YYYYMMDDHHmmss');
+
+  // const timestamp = date.getFullYear() + "" + "" + month + "" + "" + date.getDate() + "" + "" + date.getHours() + "" + "" + date.getMinutes() + "" + "" + date.getSeconds();
+  const password = new Buffer.from('174379' + 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919' + timestamp ).toString('base64')
 
   request({
     url:url,
@@ -161,7 +169,7 @@ const password = new Buffer.from('174379' + 'bfb279f9aa9bdbcf158e97dd71a467cd2e0
       "PartyA": "254724437269",
       "PartyB": "174379",
       "PhoneNumber": "254724437269",
-      "CallBackURL": "https://ba19015266ee.ngrok.io/stk_callback",
+      "CallBackURL": "https://d93364801f0a.ngrok.io/stk_callback",
       "AccountReference": "testapi0347",
       "TransactionDesc": "Activate"
     }
@@ -214,8 +222,8 @@ const password = new Buffer.from('174379' + 'bfb279f9aa9bdbcf158e97dd71a467cd2e0
       "PartyA": "600347",
       "PartyB": "254708374149",
       "Remarks": "Salaried now",
-      "QueueTimeOutURL": "https://ba19015266ee.ngrok.io/b2c_timeout_url",
-      "ResultURL": "https://ba19015266ee.ngrok.io/b2c_result_url",
+      "QueueTimeOutURL": "https://d93364801f0a.ngrok.io/b2c_timeout_url",
+      "ResultURL": "https://d93364801f0a.ngrok.io/b2c_result_url",
       "Occasion": "EVE"
     }
 
