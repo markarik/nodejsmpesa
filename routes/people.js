@@ -28,10 +28,10 @@ rows.forEach( (row) => {
   });
 
 
-  Router.get("/create", (req, res) => {
+  Router.post("/create", (req, res) => {
    
       
-      const author = { name: 'Craig Buckler', city: 'Exmouth' };
+      const author = { name: 'Mark Kariuki', city: 'Kenya' };
       mysqlconnection.query('INSERT INTO authors SET ?', author, (err, res) => {
   if(err) throw err;
 

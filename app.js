@@ -31,8 +31,8 @@ app.post("/register", accessToken, (req, resp) => {
       json: {
         ShortCode: "600347",
         ResponseType: "Completetransaction",
-        ConfirmationURL: "https://d93364801f0a.ngrok.io/confirmation",
-        ValidationURL: "https://d93364801f0a.ngrok.io/validation_url",
+        ConfirmationURL: "https://dbd81c7ced39.ngrok.io/confirmation",
+        ValidationURL: "https://dbd81c7ced39.ngrok.io/validation_url",
       },
     },
     function (error, response, body) {
@@ -48,16 +48,23 @@ app.post("/confirmation", (req, res) => {
   console.log("Confirmation");
 
   console.log(req.body);
+  
 });
 
 app.post("/validation_url", (req, res) => {
   console.log("Validation");
 
   console.log(req.body);
+  const author = req.body;
+  mysqlconnection.query('INSERT INTO mobile_payments SET ?', author, (err, res) => {
+if(err) throw err;
+
+console.log('Last insert ID:', res.insertId);
+});
 });
 
 
-app.post("/simulate", accessToken, (req, res) => {
+app.get("/simulate", accessToken, (req, res) => {
   let url = "https://sandbox.safaricom.co.ke/mpesa/c2b/v1/simulate"
   let auth = "Bearer " + req.access_token;
   request(
@@ -106,8 +113,8 @@ app.get("/balance", accessToken, (req, res) => {
         "PartyA":"600347",
         "IdentifierType":"4",
         "Remarks":"remarks.......",
-        "QueueTimeOutURL":"https://d93364801f0a.ngrok.io/timeout_url",
-        "ResultURL":"https://d93364801f0a.ngrok.io/result_url"
+        "QueueTimeOutURL":"https://dbd81c7ced39.ngrok.io/timeout_url",
+        "ResultURL":"https://dbd81c7ced39.ngrok.io/result_url"
         }
     },
 
@@ -141,7 +148,6 @@ app.post('/stk',accessToken,(req,res)=>{
   let url = 'https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest';
   let auth = "Bearer " + req.access_token;
 
-  let date = new Date()
 
 
 
@@ -169,7 +175,7 @@ app.post('/stk',accessToken,(req,res)=>{
       "PartyA": "254724437269",
       "PartyB": "174379",
       "PhoneNumber": "254724437269",
-      "CallBackURL": "https://d93364801f0a.ngrok.io/stk_callback",
+      "CallBackURL": "https://dbd81c7ced39.ngrok.io/stk_callback",
       "AccountReference": "testapi0347",
       "TransactionDesc": "Activate"
     }
@@ -222,8 +228,8 @@ const password = new Buffer.from('174379' + 'bfb279f9aa9bdbcf158e97dd71a467cd2e0
       "PartyA": "600347",
       "PartyB": "254708374149",
       "Remarks": "Salaried now",
-      "QueueTimeOutURL": "https://d93364801f0a.ngrok.io/b2c_timeout_url",
-      "ResultURL": "https://d93364801f0a.ngrok.io/b2c_result_url",
+      "QueueTimeOutURL": "https://dbd81c7ced39.ngrok.io/b2c_timeout_url",
+      "ResultURL": "https://dbd81c7ced39.ngrok.io/b2c_result_url",
       "Occasion": "EVE"
     }
 
